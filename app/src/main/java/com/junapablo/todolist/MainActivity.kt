@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
         adapter.entries.add(
             ToDoEntry(
-                "poo",
+                "poo", "very poo",
                 Calendar.getInstance().also { it.set(2021, 10, 6, 16, 30) }.time,
                 4,
                 ToDoEntry.EntryType.Shopping
@@ -97,13 +97,13 @@ class MainActivity : AppCompatActivity() {
         )
         adapter.entries.add(
             ToDoEntry(
-                "pee",
+                "eee", "very ee",
                 Calendar.getInstance().also { it.set(2021, 3, 8, 16, 30) }.time,
                 1,
                 ToDoEntry.EntryType.Shopping
             )
         )
-        adapter.entries.add(ToDoEntry("catch them all", Calendar.getInstance().also {
+        adapter.entries.add(ToDoEntry("catch them all", "go go power rangers", Calendar.getInstance().also {
             it.set(
                 2021,
                 1,

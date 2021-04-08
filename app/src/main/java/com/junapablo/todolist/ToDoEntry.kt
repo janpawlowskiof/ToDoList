@@ -9,6 +9,7 @@ import kotlin.Comparator
 
 @Parcelize
 data class ToDoEntry(
+    val title: String,
     val note: String,
     var time: Date,
     var priority: Int = 0,

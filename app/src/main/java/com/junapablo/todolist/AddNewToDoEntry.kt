@@ -26,7 +26,7 @@ class AddNewToDoEntry : AppCompatActivity() {
         binding.spinnerPriority.adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, (0..6).toList())
 
         binding.buttonAdd.setOnClickListener {
-            val entry = ToDoEntry(binding.textInputNote.text.toString(), Date())
+            val entry = ToDoEntry(binding.textInputTitle.text.toString(), binding.textInputNote.text.toString(), Date())
             entry.type = binding.spinnerType.selectedItem as ToDoEntry.EntryType
             entry.priority = binding.spinnerPriority.selectedItem as Int
 

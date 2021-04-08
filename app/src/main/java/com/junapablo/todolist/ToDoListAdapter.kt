@@ -28,6 +28,7 @@ class ToDoListAdapter(val context: MainActivity) : RecyclerView.Adapter<ToDoList
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textViewNote: TextView = view.findViewById(R.id.textViewNote)
+        val textViewTitle: TextView = view.findViewById(R.id.textViewTitle)
         val textViewDue: TextView = view.findViewById(R.id.textViewDue)
         val textViewType: TextView = view.findViewById(R.id.textViewType)
         val textViewPriority: TextView = view.findViewById(R.id.textViewPriority)
@@ -43,8 +44,9 @@ class ToDoListAdapter(val context: MainActivity) : RecyclerView.Adapter<ToDoList
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val e = entries[position]
+        holder.textViewTitle.text = e.title
         holder.textViewNote.text = e.note
-        holder.textViewDue.text = SimpleDateFormat("EEEE, d MMMM yyyy HH:mm").format(e.time)
+        holder.textViewDue.text = SimpleDateFormat("EEEE, d MMMM yyyy HH:mm", Locale.US).format(e.time)
         holder.textViewType.text = e.type.toString()
         holder.textViewPriority.text = e.priority.toString()
 

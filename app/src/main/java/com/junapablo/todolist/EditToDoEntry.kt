@@ -29,7 +29,7 @@ class EditToDoEntry : AppCompatActivity() {
         binding.textInputNote.setText(originalEntry.note)
 
         binding.buttonSave.setOnClickListener {
-            val entry = ToDoEntry(binding.textInputNote.text.toString(), Date())
+            val entry = ToDoEntry(binding.textInputTitle.text.toString(), binding.textInputNote.text.toString(), Date())
             entry.type = binding.spinnerType.selectedItem as ToDoEntry.EntryType
             entry.priority = binding.spinnerPriority.selectedItem as Int
 

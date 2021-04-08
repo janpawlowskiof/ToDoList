@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -87,30 +88,44 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        adapter.entries.add(
-            ToDoEntry(
-                "poo", "very poo",
-                Calendar.getInstance().also { it.set(2021, 10, 6, 16, 30) }.time,
-                4,
-                ToDoEntry.EntryType.Shopping
-            )
-        )
-        adapter.entries.add(
-            ToDoEntry(
-                "eee", "very ee",
-                Calendar.getInstance().also { it.set(2021, 3, 8, 16, 30) }.time,
-                1,
-                ToDoEntry.EntryType.Shopping
-            )
-        )
-        adapter.entries.add(ToDoEntry("catch them all", "go go power rangers", Calendar.getInstance().also {
-            it.set(
-                2021,
-                1,
-                10,
-                16,
-                30
-            )
-        }.time, 6, ToDoEntry.EntryType.Important))
+//        adapter.entries.add(
+//            ToDoEntry(
+//                "poo", "very poo",
+//                Calendar.getInstance().also { it.set(2021, 10, 6, 16, 30) }.time,
+//                4,
+//                ToDoEntry.EntryType.Shopping
+//            )
+//        )
+//        adapter.entries.add(
+//            ToDoEntry(
+//                "eee", "very ee",
+//                Calendar.getInstance().also { it.set(2021, 3, 8, 16, 30) }.time,
+//                1,
+//                ToDoEntry.EntryType.Shopping
+//            )
+//        )
+//        adapter.entries.add(ToDoEntry("catch them all", "go go power rangers", Calendar.getInstance().also {
+//            it.set(
+//                2021,
+//                1,
+//                10,
+//                16,
+//                30
+//            )
+//        }.time, 6, ToDoEntry.EntryType.Important))
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.run{
+            putParcelableArray("entries", adapter.entries.toTypedArray())
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        adapter.entries.clear()
+        (savedInstanceState["entries"] as Array<ToDoEntry>).forEach { adapter.entries.add(it) }
+        adapter.notifyDataSetChanged()
     }
 }

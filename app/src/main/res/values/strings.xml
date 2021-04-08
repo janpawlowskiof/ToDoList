@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ToDo List</string>
+    <string name="sort_by">Sorting: </string>
+    <string name="add_new">Add New</string>
+</resources>

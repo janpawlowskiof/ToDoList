@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
 import com.junapablo.todolist.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -22,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: ToDoListAdapter
     private lateinit var itemTouchHelper: ItemTouchHelper
+    lateinit var entriesDao: ToDoEntryDao
+
 
     private val newToDoEntryResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -29,9 +32,8 @@ class MainActivity : AppCompatActivity() {
             if (toDoEntry !is ToDoEntry)
                 return@registerForActivityResult
 
+            adapter.addEntry(toDoEntry)
             Log.d("mDebug", "Note: ${toDoEntry.note}")
-            adapter.entries.add(toDoEntry)
-            adapter.notifyDataSetChanged();
         }
     }
 
@@ -42,9 +44,7 @@ class MainActivity : AppCompatActivity() {
             if (toDoEntry !is ToDoEntry || originalToDoEntry !is ToDoEntry)
                 return@registerForActivityResult
 
-            Log.d("mDebug", "Note: ${toDoEntry.note}")
-            adapter.entries[adapter.entries.indexOf(originalToDoEntry)] = toDoEntry
-            adapter.notifyDataSetChanged();
+            adapter.replaceEntry(toDoEntry, originalToDoEntry)
         }
     }
 
@@ -52,6 +52,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        entriesDao = Room.databaseBuilder(
+            applicationContext,
+            ToDoEntriesDatabase::class.java, "entries"
+        ).build().toDoEntryDao()
 
         binding.buttonAddNew.setOnClickListener {
             newToDoEntryResult.launch(Intent(this, AddNewToDoEntry::class.java))
@@ -82,35 +86,11 @@ class MainActivity : AppCompatActivity() {
             ) {
                 Log.d("mDebug", "Item selected")
                 val sortType = ToDoEntry.SortTypes.values()[position]
-                adapter.entries.sortWith(sortType.comparator)
+                adapter.getEntries().sortWith(sortType.comparator)
                 adapter.notifyDataSetChanged()
             }
         }
 
-        adapter.entries.add(
-            ToDoEntry(
-                "poo", "very poo",
-                Calendar.getInstance().also { it.set(2021, 10, 6, 16, 30) }.time,
-                4,
-                ToDoEntry.EntryType.Shopping
-            )
-        )
-        adapter.entries.add(
-            ToDoEntry(
-                "eee", "very ee",
-                Calendar.getInstance().also { it.set(2021, 3, 8, 16, 30) }.time,
-                1,
-                ToDoEntry.EntryType.Shopping
-            )
-        )
-        adapter.entries.add(ToDoEntry("catch them all", "go go power rangers", Calendar.getInstance().also {
-            it.set(
-                2021,
-                1,
-                10,
-                16,
-                30
-            )
-        }.time, 6, ToDoEntry.EntryType.Important))
+        adapter.loadAllEntries()
     }
 }

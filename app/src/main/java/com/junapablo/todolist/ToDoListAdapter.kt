@@ -18,13 +18,16 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ToDoListAdapter(val context: MainActivity) : RecyclerView.Adapter<ToDoListAdapter.ViewHolder>(){
-    val entries = mutableListOf<ToDoEntry>()
+    private val entries = mutableListOf<ToDoEntry>()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textViewNote: TextView = view.findViewById(R.id.textViewNote)
@@ -50,11 +53,11 @@ class ToDoListAdapter(val context: MainActivity) : RecyclerView.Adapter<ToDoList
         holder.textViewType.text = e.type.toString()
         holder.textViewPriority.text = e.priority.toString()
 
-        if(!Calendar.getInstance().before(Calendar.getInstance().also{it.time = e.time})){
+        if(!Calendar.getInstance().before(Calendar.getInstance().also{it.timeInMillis = e.time})){
             holder.cardView.setCardBackgroundColor(Color.parseColor("#9c3d30"))
         }
         else if(!Calendar.getInstance().also{it.add(Calendar.DAY_OF_MONTH, 1)}.before(Calendar.getInstance().also{
-                it.time = e.time
+                it.timeInMillis = e.time
             })){
             holder.cardView.setCardBackgroundColor(Color.parseColor("#719c30"))
         }
@@ -73,6 +76,37 @@ class ToDoListAdapter(val context: MainActivity) : RecyclerView.Adapter<ToDoList
 
     override fun getItemCount(): Int {
         return entries.size
+    }
+
+    fun getEntries(): MutableList<ToDoEntry>{
+        return entries
+    }
+
+    fun loadAllEntries(){
+        entries.clear()
+        context.lifecycleScope.launch {
+            context.entriesDao.getAll().forEach {
+                entries.add(it)
+            }
+        }
+        notifyDataSetChanged()
+    }
+
+    fun addEntry(entry: ToDoEntry){
+        entries.add(entry)
+        notifyDataSetChanged()
+        context.lifecycleScope.launch {
+            context.entriesDao.insertAll(entry)
+        }
+    }
+
+    fun replaceEntry(newEntry: ToDoEntry, oldEntry: ToDoEntry){
+        entries[entries.indexOf(oldEntry)] = newEntry
+        context.lifecycleScope.launch {
+            context.entriesDao.insertAll(newEntry)
+            context.entriesDao.delete(oldEntry)
+        }
+        notifyDataSetChanged()
     }
 
     class SwipeToDeleteCallback(val adapter: ToDoListAdapter) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {

@@ -26,8 +26,8 @@ class AddNewToDoEntry : AppCompatActivity() {
         binding.spinnerPriority.adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, (0..6).toList())
 
         binding.buttonAdd.setOnClickListener {
-            val entry = ToDoEntry(binding.textInputTitle.text.toString(), binding.textInputNote.text.toString(), Date())
-            entry.type = binding.spinnerType.selectedItem as ToDoEntry.EntryType
+            val entry = ToDoEntry(binding.textInputTitle.text.toString(), binding.textInputNote.text.toString(), 0)
+            entry.type = binding.spinnerType.selectedItem.toString()
             entry.priority = binding.spinnerPriority.selectedItem as Int
 
             val c = Calendar.getInstance()
@@ -35,10 +35,10 @@ class AddNewToDoEntry : AppCompatActivity() {
             val timePickerListener = TimePickerDialog.OnTimeSetListener{ _, hourOfDay, minute ->
 
                 entry.time = Calendar.getInstance().also {
-                    it.time = entry.time
+                    it.timeInMillis = entry.time
                     it.set(Calendar.HOUR_OF_DAY, hourOfDay)
                     it.set(Calendar.MINUTE, minute)
-                }.time
+                }.timeInMillis
 
                 Intent().putExtra("ToDoEntry", entry).also{intent ->
                     setResult(RESULT_OK, intent)
@@ -51,7 +51,7 @@ class AddNewToDoEntry : AppCompatActivity() {
 
                 entry.time = Calendar.getInstance().also {
                     it.set(year, month, dayOfMonth)
-                }.time
+                }.timeInMillis
 
                 timePickerDialog.show()
             }

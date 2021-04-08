@@ -2,19 +2,23 @@ package com.junapablo.todolist
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.*
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 import kotlin.Comparator
 
 
+@Entity
 @Parcelize
 data class ToDoEntry(
-    val title: String,
-    val note: String,
-    var time: Date,
-    var priority: Int = 0,
-    var type: EntryType = EntryType.Shopping
+    @ColumnInfo(name = "title")val title: String,
+    @ColumnInfo(name = "note")val note: String,
+    @ColumnInfo(name = "time")var time: Long,
+    @ColumnInfo(name = "priority")var priority: Int = 0,
+    @ColumnInfo(name = "type") var type: String = EntryType.Shopping.toString(),
+    @PrimaryKey val id: String = UUID.randomUUID().toString()
 ) : Parcelable {
+
     enum class EntryType(val value: String) {
         Important("❗"),
         Shopping("\uD83D\uDED2"),
@@ -36,4 +40,21 @@ data class ToDoEntry(
             return value
         }
     }
+}
+
+@Dao
+interface ToDoEntryDao {
+    @Query("SELECT * FROM todoentry")
+    suspend fun getAll(): List<ToDoEntry>
+
+    @Insert
+    suspend fun insertAll(vararg users: ToDoEntry)
+
+    @Delete
+    suspend fun delete(user: ToDoEntry)
+}
+
+@Database(entities = arrayOf(ToDoEntry::class), version = 1)
+abstract class ToDoEntriesDatabase : RoomDatabase() {
+    abstract fun toDoEntryDao(): ToDoEntryDao
 }

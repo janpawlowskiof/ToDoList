@@ -29,20 +29,20 @@ class EditToDoEntry : AppCompatActivity() {
         binding.textInputNote.setText(originalEntry.note)
 
         binding.buttonSave.setOnClickListener {
-            val entry = ToDoEntry(binding.textInputTitle.text.toString(), binding.textInputNote.text.toString(), Date())
-            entry.type = binding.spinnerType.selectedItem as ToDoEntry.EntryType
+            val entry = ToDoEntry(binding.textInputTitle.text.toString(), binding.textInputNote.text.toString(), 0)
+            entry.type = binding.spinnerType.selectedItem.toString()
             entry.priority = binding.spinnerPriority.selectedItem as Int
 
             val c = Calendar.getInstance()
-            c.time = originalEntry.time
+            c.timeInMillis = originalEntry.time
 
             val timePickerListener = TimePickerDialog.OnTimeSetListener{ _, hourOfDay, minute ->
 
                 entry.time = Calendar.getInstance().also {
-                    it.time = entry.time
+                    it.timeInMillis = entry.time
                     it.set(Calendar.HOUR_OF_DAY, hourOfDay)
                     it.set(Calendar.MINUTE, minute)
-                }.time
+                }.timeInMillis
 
                 Intent().putExtra("ToDoEntry", entry).putExtra("OriginalToDoEntry", originalEntry).also{ intent ->
                     setResult(RESULT_OK, intent)
@@ -53,7 +53,7 @@ class EditToDoEntry : AppCompatActivity() {
             val datePickerListener = DatePickerDialog.OnDateSetListener{ _, year, month, dayOfMonth ->
                 entry.time = Calendar.getInstance().also {
                     it.set(year, month, dayOfMonth)
-                }.time
+                }.timeInMillis
                 timePickerDialog.show()
             }
             DatePickerDialog(this, datePickerListener, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(

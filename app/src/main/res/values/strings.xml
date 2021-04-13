@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">ToDo List</string>
     <string name="sort_by">Sorting: </string>
-    <string name="add_new">Add New</string>
+    <string name="add_new">Add New Reminder</string>
+    <string name="channel_name">juanpablo_todo</string>
+    <string name="channel_description">todo notifications</string>
 </resources>

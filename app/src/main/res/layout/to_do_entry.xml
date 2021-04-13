@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -22,13 +23,12 @@
             android:orientation="horizontal"
             android:padding="8dp">
 
-            <TextView
-                android:id="@+id/textViewType"
+            <ImageView
+                android:id="@+id/imageViewType"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_margin="8dp"
-                android:gravity="center"
-                android:text="t" />
+                tools:srcCompat="@drawable/ic_launcher_background" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -55,13 +55,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="1dp"
-                        android:text="Due: " />
+                        android:text="Due: "
+                        android:textColor="@color/material_on_surface_emphasis_high_type" />
 
                     <TextView
                         android:id="@+id/textViewDue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="due-date" />
+                        android:text="due-date"
+                        android:textColor="@color/material_on_surface_emphasis_high_type" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -73,13 +75,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="1dp"
-                        android:text="Priority: " />
+                        android:text="Priority: "
+                        android:textColor="@color/material_on_surface_emphasis_high_type" />
 
                     <TextView
                         android:id="@+id/textViewPriority"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1" />
+                        android:text="1"
+                        android:textColor="@color/material_on_surface_emphasis_high_type" />
                 </LinearLayout>
 
                 <TextView

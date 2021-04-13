@@ -27,10 +27,11 @@ class EditToDoEntry : AppCompatActivity() {
         binding.spinnerPriority.setSelection(originalEntry.priority)
 
         binding.textInputNote.setText(originalEntry.note)
+        binding.textInputTitle.setText(originalEntry.title)
 
         binding.buttonSave.setOnClickListener {
             val entry = ToDoEntry(binding.textInputTitle.text.toString(), binding.textInputNote.text.toString(), 0)
-            entry.type = binding.spinnerType.selectedItem.toString()
+            entry.type = (binding.spinnerType.selectedItem as ToDoEntry.EntryType).value
             entry.priority = binding.spinnerPriority.selectedItem as Int
 
             val c = Calendar.getInstance()

@@ -2,8 +2,12 @@ package com.junapablo.todolist
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,6 +22,8 @@ import com.junapablo.todolist.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
+
+const val CHANNEL_ID = "com.junapablo.todolist.notification_channel"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -52,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        createNotificationChannel()
         entriesDao = Room.databaseBuilder(
             applicationContext,
             ToDoEntriesDatabase::class.java, "entries"
@@ -86,11 +93,24 @@ class MainActivity : AppCompatActivity() {
             ) {
                 Log.d("mDebug", "Item selected")
                 val sortType = ToDoEntry.SortTypes.values()[position]
-                adapter.getEntries().sortWith(sortType.comparator)
-                adapter.notifyDataSetChanged()
+                adapter.sortingType = sortType.comparator
+                adapter.sort()
             }
         }
 
         adapter.loadAllEntries()
+    }
+
+    private fun createNotificationChannel() {
+        val name = getString(R.string.channel_name)
+        val descriptionText = getString(R.string.channel_description)
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
+        mChannel.description = descriptionText
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(mChannel)
+
     }
 }
